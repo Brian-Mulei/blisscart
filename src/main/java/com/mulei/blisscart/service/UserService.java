@@ -1,32 +1,39 @@
 package com.mulei.blisscart.service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mulei.blisscart.model.User;
 import com.mulei.blisscart.repository.UserRepository;
+import com.mulei.blisscart.security.token.ConfirmationToken;
+import com.mulei.blisscart.security.token.ConfirmationTokenService;
 
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class UserService  implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
-   private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private final static String USER_NOT_FOUND_MSG =
-    "user with email %s not found";
-    
+    private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         return userRepository.findByEmail(email)
-        .orElseThrow(() ->
-                new UsernameNotFoundException(
+                .orElseThrow(() -> new UsernameNotFoundException(
                         String.format(USER_NOT_FOUND_MSG, email)));
- 
+
     }
 
     public String signUpUser(User user) {
@@ -40,34 +47,32 @@ public class UserService  implements UserDetailsService {
 
             throw new IllegalStateException("email already taken");
         }
+        String encodedPassword = bCryptPasswordEncoder
+                .encode(user.getPassword());
 
-        // String encodedPassword = bCryptPasswordEncoder
-        //         .encode(appUser.getPassword());
+        user.setPassword(encodedPassword); 
 
-        // appUser.setPassword(encodedPassword);
+        userRepository.save(user);
 
-        // appUserRepository.save(appUser);
+        String token = UUID.randomUUID().toString();
 
-        // String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                user);
 
-        // ConfirmationToken confirmationToken = new ConfirmationToken(
-        //         token,
-        //         LocalDateTime.now(),
-        //         LocalDateTime.now().plusMinutes(15),
-        //         appUser
-        // );
+        confirmationTokenService.saveConfirmationToken(
+                confirmationToken);
 
-        // confirmationTokenService.saveConfirmationToken(
-        //         confirmationToken);
+        // TODO: SEND EMAIL
 
-//        TODO: SEND EMAIL
-
-      //  return token;
-      return  null;
+        return token;
+        // return null;
     }
 
-    public int enableAppUser(String email) {
-        return userRepository.enableAppUser(email);
+    public int enableuser(String email) {
+        return userRepository.enableUser(email);
     }
 
 }
