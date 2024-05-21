@@ -3,6 +3,7 @@ package com.mulei.blisscart.model;
 import java.util.Collection;
 import java.util.List;
 
+import com.mulei.blisscart.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
