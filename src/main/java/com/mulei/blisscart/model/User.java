@@ -33,7 +33,11 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "username")
+
+    @Column(name = "email",unique = true)
+
+    private String email;
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
@@ -73,6 +77,16 @@ public class User implements UserDetails {
     public String getUsername() {
         return username;
     }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
