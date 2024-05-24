@@ -1,4 +1,4 @@
-package com.mulei.blisscart.model;
+package com.mulei.blisscart.reponse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

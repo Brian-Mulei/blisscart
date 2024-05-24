@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mulei.blisscart.model.AuthenticationResponse;
-import com.mulei.blisscart.model.User;
+import com.mulei.blisscart.dto.UserDTO;
+import com.mulei.blisscart.dto.VendorRegistrationDTO;
+import com.mulei.blisscart.reponse.AuthenticationResponse;
 import com.mulei.blisscart.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,14 +25,21 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody User request
+            @RequestBody UserDTO request
             ) {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    @PostMapping("/register/vendor")
+    public ResponseEntity<AuthenticationResponse> registeVendor(
+            @RequestBody VendorRegistrationDTO request
+            ) {
+        return ResponseEntity.ok(authService.registerVendor(request));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
-            @RequestBody User request
+            @RequestBody UserDTO request
     ) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
