@@ -5,7 +5,7 @@ import com.mulei.blisscart.enums.Role;
 public class UserDTO {
 
   
-     private String firstName; 
+    private String firstName; 
     private String lastName; 
     private String email;  
     private String username;  

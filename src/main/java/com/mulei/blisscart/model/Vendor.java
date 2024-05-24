@@ -20,9 +20,8 @@ public class Vendor {
     private Integer id;
 
     @OneToOne 
-    @Column(name = "user_id",nullable = false)
-    @JoinColumn(name = "id")
-    private User user;
+    @JoinColumn(name = "user_id",nullable = false)
+     private User user;
 
     @Column(name = "business_name",nullable = false, unique = true)
     private String businessName;

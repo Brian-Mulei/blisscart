@@ -2,7 +2,7 @@ package com.mulei.blisscart.dto;
 
 public class VendorDTO {
 
-     private Long userId;
+    private Long userId;
     private String businessName;
     private String address;
 

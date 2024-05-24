@@ -87,31 +87,23 @@ public class AuthenticationService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-
         user.setRole(request.getRole());
-
         user = repository.save(user);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-
         Vendor vendor =new Vendor();
-
         vendor.setAddress(request.getAddress());
         vendor.setBusinessName(request.getBusinessName());
         vendor.setUser(user); 
-        
+
         saveUserToken(accessToken, refreshToken, user);
 
         return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
 
     } 
-
-
-
-
+ 
     
     public AuthenticationResponse authenticate(UserDTO request) {
         authenticationManager.authenticate(
