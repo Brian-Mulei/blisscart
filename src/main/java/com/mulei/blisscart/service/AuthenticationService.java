@@ -11,9 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mulei.blisscart.model.AuthenticationResponse;
+import com.mulei.blisscart.dto.UserDTO;
+import com.mulei.blisscart.dto.VendorRegistrationDTO;
 import com.mulei.blisscart.model.Token;
 import com.mulei.blisscart.model.User;
+import com.mulei.blisscart.model.Vendor;
+import com.mulei.blisscart.reponse.AuthenticationResponse;
 import com.mulei.blisscart.repository.TokenRepository;
 import com.mulei.blisscart.repository.UserRepository;
 
@@ -43,7 +46,7 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthenticationResponse register(User request) {
+    public AuthenticationResponse register(UserDTO request) {
 
         // check if user already exist. if exist than authenticate the user
         if(repository.findByUsername(request.getUsername()).isPresent()) {
@@ -69,9 +72,40 @@ public class AuthenticationService {
 
         return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
 
-    }
+    } 
 
-    public AuthenticationResponse authenticate(User request) {
+    public AuthenticationResponse registerVendor(VendorRegistrationDTO request) {
+
+        // check if user already exist. if exist than authenticate the user
+        if(repository.findByUsername(request.getUsername()).isPresent()) {
+            return new AuthenticationResponse(null, null,"User already exist");
+        }
+
+        User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        user = repository.save(user);
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        Vendor vendor =new Vendor();
+        vendor.setAddress(request.getAddress());
+        vendor.setBusinessName(request.getBusinessName());
+        vendor.setUser(user); 
+
+        saveUserToken(accessToken, refreshToken, user);
+
+        return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
+
+    } 
+ 
+    
+    public AuthenticationResponse authenticate(UserDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
