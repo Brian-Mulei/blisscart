@@ -3,6 +3,7 @@ package com.mulei.blisscart.service;
 
 import java.util.List;
 
+import com.mulei.blisscart.repository.VendorRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AuthenticationService {
 
     private final UserRepository repository;
+
+    private final VendorRepository vendorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -35,11 +38,12 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationService(UserRepository repository,
-                                 PasswordEncoder passwordEncoder,
+                                 VendorRepository vendorRepository, PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
                                  TokenRepository tokenRepository,
                                  AuthenticationManager authenticationManager) {
         this.repository = repository;
+        this.vendorRepository = vendorRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
@@ -96,7 +100,9 @@ public class AuthenticationService {
         Vendor vendor =new Vendor();
         vendor.setAddress(request.getAddress());
         vendor.setBusinessName(request.getBusinessName());
-        vendor.setUser(user); 
+        vendor.setUser(user);
+
+        vendorRepository.save(vendor);
 
         saveUserToken(accessToken, refreshToken, user);
 

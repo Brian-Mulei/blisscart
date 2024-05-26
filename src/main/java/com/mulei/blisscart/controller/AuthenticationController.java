@@ -31,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register/vendor")
-    public ResponseEntity<AuthenticationResponse> registeVendor(
+    public ResponseEntity<AuthenticationResponse> registerVendor(
             @RequestBody VendorRegistrationDTO request
             ) {
         return ResponseEntity.ok(authService.registerVendor(request));

@@ -1,5 +1,6 @@
 package com.mulei.blisscart.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,7 @@ import com.mulei.blisscart.service.ProductService;
 @RestController
 public class ProductController {
 
-    private final ProductService productService;
+     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
