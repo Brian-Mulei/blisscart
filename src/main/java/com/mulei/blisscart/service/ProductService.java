@@ -1,5 +1,7 @@
 package com.mulei.blisscart.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.mulei.blisscart.dto.ProductDTO;
@@ -49,6 +51,15 @@ public class ProductService {
         productRepository.save(product);      
 
         return new ResourceResponse(null, "Added Successfully", true);
+
+    }
+    
+    public ResourceResponse getProducts(){
+
+     
+        List<Product>products = productRepository.findAll();
+
+        return new ResourceResponse(products, "Added Successfully", true);
 
     }
     

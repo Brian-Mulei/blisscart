@@ -1,5 +1,7 @@
 package com.mulei.blisscart.reponse;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ResourceResponse {
@@ -11,19 +13,19 @@ public class ResourceResponse {
     private String message;
 
     @JsonProperty("data")
-    private String data;
+    private List data;
 
-    public ResourceResponse(String data, String message, Boolean success) {
+    public ResourceResponse(List data, String message, Boolean success) {
         this.data = data;
         this.message = message;
         this.success = success;
     }
 
-    public String getData() {
+    public List getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(List data) {
         this.data = data;
     }
 
