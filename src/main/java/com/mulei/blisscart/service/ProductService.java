@@ -1,6 +1,7 @@
 package com.mulei.blisscart.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -59,11 +60,23 @@ public class ProductService {
      
         List<Product>products = productRepository.findAll();
 
-        return new ResourceResponse(products, "Added Successfully", true);
-
+    //    return new ResourceResponse(products, "Added Successfully", true);
+        List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return new ResourceResponse(productDTOs, "Fetched successfully", true);
     }
-    
 
+    private ProductDTO convertToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
+        );
+        productDTO.setId(product.getId());
+       productDTO.setVendorId(product.getVendor().getId());
+       productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
+        return productDTO;
+    }
 
   
 

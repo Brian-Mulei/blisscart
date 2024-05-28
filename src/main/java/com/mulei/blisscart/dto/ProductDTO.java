@@ -2,6 +2,7 @@ package com.mulei.blisscart.dto;
 
 public class ProductDTO {
 
+    private Long id;
      private Long vendorId;
     private Long categoryId;
     private String name;
@@ -9,16 +10,16 @@ public class ProductDTO {
     private Double price;
     private Integer quantity; 
 
-    public ProductDTO(Long categoryId, String description,   String name, Double price, Integer quantity, Long vendorId) {
-        this.categoryId = categoryId;
-        this.description = description;
-
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-        this.vendorId = vendorId;
-    }
-
+//    public ProductDTO(Long categoryId, String description,   String name, Double price, Integer quantity, Long vendorId) {
+//        this.categoryId = categoryId;
+//        this.description = description;
+//
+//        this.name = name;
+//        this.price = price;
+//        this.quantity = quantity;
+//        this.vendorId = vendorId;
+//    }
+//
 
 
     public Long getVendorId() {
@@ -69,4 +70,11 @@ public class ProductDTO {
         this.quantity = quantity;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

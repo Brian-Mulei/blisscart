@@ -16,10 +16,10 @@ import jakarta.persistence.Table;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
