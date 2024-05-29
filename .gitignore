@@ -35,3 +35,5 @@ build/
 # Sensitive Information
 application.properties
 application-dev.properties
+
+src/main/resources/application.properties
