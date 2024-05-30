@@ -17,12 +17,11 @@ public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @OneToOne 
-    @Column(name = "user_id",nullable = false)
-    @JoinColumn(name = "id")
-    private User user;
+    @JoinColumn(name = "user_id",nullable = false)
+     private User user;
 
     @Column(name = "business_name",nullable = false, unique = true)
     private String businessName;
@@ -31,11 +30,11 @@ public class Vendor {
     @Column(name="address")
     private String address;
  
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
