@@ -1,13 +1,19 @@
 package com.mulei.blisscart.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
+import com.mulei.blisscart.dto.ProductCreationDTO;
 import com.mulei.blisscart.dto.ProductDTO;
 import com.mulei.blisscart.model.Product;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.repository.CategoryRepository;
 import com.mulei.blisscart.repository.ProductRepository;
 import com.mulei.blisscart.repository.VendorRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService {
@@ -26,7 +32,7 @@ public class ProductService {
     }
 
 
-    public ResourceResponse addProduct(ProductDTO request){
+    public ResourceResponse addProduct(ProductCreationDTO request){
 
         if(vendorRepository.findById(request.getVendorId()).isEmpty()){
             return new ResourceResponse(null, "Vendor not found", false);
@@ -52,7 +58,71 @@ public class ProductService {
 
     }
     
+    public ResourceResponse getProducts(){
 
+     
+        List<Product>products = productRepository.findAll();
+
+    //    return new ResourceResponse(products, "Added Successfully", true);
+        List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return new ResourceResponse(productDTOs, "Fetched successfully", true);
+    }
+
+    
+    @Transactional
+    public ResourceResponse updatePrice(Long productId, Double newPrice) {
+        try {
+
+            if(productRepository.findById(productId).isEmpty()){
+                return new ResourceResponse(null, "Product not found", false);
+            }
+
+             productRepository.updatePrice(productId, newPrice);         
+             return new ResourceResponse(null, "Updated Successfully", true);
+ 
+
+        } catch (Exception e) {
+        
+            return new ResourceResponse( null, "Failed to Update", false);
+
+        }
+    }
+
+
+    @Transactional
+    public ResourceResponse updateQuantity(Long productId, Integer newQuantity){
+
+        try {
+            if(productRepository.findById(productId).isEmpty()){
+                return new ResourceResponse(null, "Product not found", false);
+            }
+
+             productRepository.updateQuantity(productId, newQuantity);        
+             return new ResourceResponse(null, "Updated Successfully", true);
+ 
+
+        } catch (Exception e) {
+
+            return new ResourceResponse(null, "Failed to Update", false);
+
+        }  
+
+    }
+
+
+
+    private ProductDTO convertToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
+        );
+        productDTO.setId(product.getId());
+       productDTO.setVendorId(product.getVendor().getId());
+       productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
+        return productDTO;
+    }
 
   
 
