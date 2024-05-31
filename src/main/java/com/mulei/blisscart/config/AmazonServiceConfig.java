@@ -14,7 +14,5 @@ public class AmazonServiceConfig {
     @Value("${aws.secret.key}")
     String awsSecretKey;
 
-
-         .build();
-    }
+ 
 }
