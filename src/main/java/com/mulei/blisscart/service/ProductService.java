@@ -3,6 +3,8 @@ package com.mulei.blisscart.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.mulei.blisscart.dto.ProductCreationDTO;
@@ -58,15 +60,20 @@ public class ProductService {
 
     }
     
-    public ResourceResponse getProducts(){
+    public ResourceResponse getProducts(int page, int size){
 
      
-        List<Product>products = productRepository.findAll();
+        Page<Product>products = productRepository.findAll(PageRequest.of(page, size));
 
     //    return new ResourceResponse(products, "Added Successfully", true);
         List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+
+
         return new ResourceResponse(productDTOs, "Fetched successfully", true);
     }
+
+
 
     
     @Transactional
