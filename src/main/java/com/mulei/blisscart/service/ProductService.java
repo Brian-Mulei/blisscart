@@ -1,11 +1,12 @@
 package com.mulei.blisscart.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mulei.blisscart.dto.ProductImageDTO;
 import com.mulei.blisscart.model.Product_Image;
+import com.mulei.blisscart.repository.ProductImageRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ import com.mulei.blisscart.repository.ProductRepository;
 import com.mulei.blisscart.repository.VendorRepository;
 
 import jakarta.transaction.Transactional;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class ProductService {
@@ -32,11 +36,22 @@ public class ProductService {
 
     private final  AWSService awsService;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService) {
+
+    private final ProductImageRepository productImageRepository;
+
+    @Value("${amazon.s3.bucket-name}")
+    String bucketName;
+
+     private final S3Client s3Client;
+
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository, S3Client s3Client) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
         this.awsService = awsService;
+        this.productImageRepository = productImageRepository;
+        this.s3Client = s3Client;
     }
 
 
@@ -135,7 +150,27 @@ public class ProductService {
     }
 
 
+    public ResourceResponse deleteFile(String url) throws Exception{
 
+        try{
+            DeleteObjectRequest deleteObjectRequest=  DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(url).build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+
+
+            //productImageRepository.delete(productImageRepository.findByUrl(url));
+
+            return new ResourceResponse(null, "Deleted Successfully", true);
+
+
+        } catch (S3Exception e) {
+            return new ResourceResponse(null, "Unable to delete", false);
+
+        }
+
+    }
     private ProductDTO convertToDTO(Product product) {
 
         List<ProductImageDTO> imageUrls = product.getImages().stream()
