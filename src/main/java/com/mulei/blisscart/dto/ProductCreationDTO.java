@@ -1,6 +1,9 @@
 package com.mulei.blisscart.dto;
 
+import com.mulei.blisscart.model.Product_Image;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public class ProductCreationDTO {
 
@@ -11,9 +14,10 @@ public class ProductCreationDTO {
     private String name;
     private String description;
     private Double price;
-    private Integer quantity; 
-    private MultipartFile file;
-     
+    private Integer quantity;
+    List<MultipartFile> images;
+
+
     public Long getVendorId() {
         return vendorId;
     }
@@ -70,11 +74,11 @@ public class ProductCreationDTO {
         this.id = id;
     }
 
-    public MultipartFile getFile() {
-        return file;
+    public List<MultipartFile> getImages() {
+        return images;
     }
 
-    public void setFile(MultipartFile file) {
-        this.file = file;
+    public void setImages(List<MultipartFile> images) {
+        this.images = images;
     }
 }

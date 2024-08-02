@@ -1,8 +1,13 @@
 package com.mulei.blisscart.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mulei.blisscart.dto.ProductImageDTO;
+import com.mulei.blisscart.model.Product_Image;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.mulei.blisscart.dto.ProductCreationDTO;
@@ -25,14 +30,17 @@ public class ProductService {
 
     private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository,CategoryRepository categoryRepository, VendorRepository vendorRepository) {
+    private final  AWSService awsService;
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
+        this.awsService = awsService;
     }
 
 
-    public ResourceResponse addProduct(ProductCreationDTO request){
+    public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls){
 
         if(vendorRepository.findById(request.getVendorId()).isEmpty()){
             return new ResourceResponse(null, "Vendor not found", false);
@@ -45,12 +53,24 @@ public class ProductService {
 
         Product product = new Product();
 
+
+        List<Product_Image> images = image_urls.stream()
+                .map(url -> {
+                    Product_Image image = new Product_Image();
+                    image.setImage_url(url);
+                    image.setProduct(product);
+                    return image;
+                })
+                .collect(Collectors.toList());
+
+
         product.setCategory(categoryRepository.findById(request.getCategoryId()).get());
         product.setVendor(vendorRepository.findById(request.getVendorId()).get());
         product.setName(request.getName());
         product.setPrice(request.getPrice());
         product.setQuantity(request.getQuantity());
         product.setDescription(request.getDescription());
+       product.setImages(images);
 
         productRepository.save(product);      
 
@@ -58,15 +78,20 @@ public class ProductService {
 
     }
     
-    public ResourceResponse getProducts(){
+    public ResourceResponse getProducts(int page, int size){
 
      
-        List<Product>products = productRepository.findAll();
+        Page<Product>products = productRepository.findAll(PageRequest.of(page, size));
 
     //    return new ResourceResponse(products, "Added Successfully", true);
         List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+
+
         return new ResourceResponse(productDTOs, "Fetched successfully", true);
     }
+
+
 
     
     @Transactional
@@ -112,6 +137,11 @@ public class ProductService {
 
 
     private ProductDTO convertToDTO(Product product) {
+
+        List<ProductImageDTO> imageUrls = product.getImages().stream()
+                .map(this::convertToImageDTO)
+                .toList();
+
         ProductDTO productDTO = new ProductDTO(
         );
         productDTO.setId(product.getId());
@@ -121,7 +151,16 @@ public class ProductService {
         productDTO.setDescription(product.getDescription());
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
+        productDTO.setImages(imageUrls);
         return productDTO;
+    }
+
+    private ProductImageDTO convertToImageDTO(Product_Image image) {
+        return new  ProductImageDTO
+            (
+                image.getId(),
+                image.getImage_url()
+        );
     }
 
   
