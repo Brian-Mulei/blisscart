@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.mulei.blisscart.dto.ProductImageDTO;
 import com.mulei.blisscart.model.Product_Image;
 import com.mulei.blisscart.repository.ProductImageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +35,6 @@ public class ProductService {
 
     private final CategoryRepository categoryRepository;
 
-    private final  AWSService awsService;
 
 
     private final ProductImageRepository productImageRepository;
@@ -42,16 +42,16 @@ public class ProductService {
     @Value("${amazon.s3.bucket-name}")
     String bucketName;
 
-     private final S3Client s3Client;
+    @Autowired
+    private final AWSService awsService;
 
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository, S3Client s3Client) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository ) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
+         this.productImageRepository = productImageRepository;
         this.awsService = awsService;
-        this.productImageRepository = productImageRepository;
-        this.s3Client = s3Client;
     }
 
 
@@ -153,16 +153,18 @@ public class ProductService {
     public ResourceResponse deleteFile(String url) throws Exception{
 
         try{
-            DeleteObjectRequest deleteObjectRequest=  DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(url).build();
+           Boolean successful_deletion=   awsService.deleteFile(url);
 
-            s3Client.deleteObject(deleteObjectRequest);
+            if(successful_deletion){
+
+                    return new ResourceResponse(null, "Deleted Successfully", true);
 
 
-            //productImageRepository.delete(productImageRepository.findByUrl(url));
+            }else{
+                return new ResourceResponse(null, "Unable to delete", false);
 
-            return new ResourceResponse(null, "Deleted Successfully", true);
+            }
+
 
 
         } catch (S3Exception e) {
