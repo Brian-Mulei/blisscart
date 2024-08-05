@@ -1,7 +1,5 @@
 package com.mulei.blisscart.dto;
 
-import com.mulei.blisscart.model.Product_Image;
-
 import java.util.List;
 
 public class ProductDTO {

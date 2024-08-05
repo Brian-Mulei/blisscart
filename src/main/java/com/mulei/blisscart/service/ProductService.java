@@ -1,6 +1,5 @@
 package com.mulei.blisscart.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,15 +28,12 @@ public class ProductService {
     private final VendorRepository vendorRepository;
 
     private final CategoryRepository categoryRepository;
-
-    private final  AWSService awsService;
-
+ 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
-        this.awsService = awsService;
-    }
+     }
 
 
     public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls){
