@@ -3,6 +3,8 @@ package com.mulei.blisscart.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.mulei.blisscart.enums.OrderStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,10 +34,14 @@ public class Order {
     private Double total;
 
 
-    private LocalDateTime purchaseTime;
+    private LocalDateTime orderTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
+
+    @Column(name="status", nullable = false)
+      private OrderStatus status;
+
 
     public void setId(Long id) {
         this.id = id;
@@ -77,11 +83,20 @@ public class Order {
         this.items = items;
     }
 
-    public LocalDateTime getpurchaseTime() {
-        return purchaseTime;
+    public LocalDateTime getorderTime() {
+        return orderTime;
     }
 
-    public void setpurchaseTime(LocalDateTime purchaseTime) {
-        this.purchaseTime = purchaseTime;
+    public void setorderTime(LocalDateTime orderTime) {
+        this.orderTime = orderTime;
+    }
+
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 }
