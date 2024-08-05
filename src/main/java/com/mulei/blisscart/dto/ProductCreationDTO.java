@@ -1,9 +1,8 @@
 package com.mulei.blisscart.dto;
 
-import com.mulei.blisscart.model.Product_Image;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class ProductCreationDTO {
 

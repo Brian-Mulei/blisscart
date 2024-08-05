@@ -1,11 +1,13 @@
 package com.mulei.blisscart.service;
 
-import com.mulei.blisscart.reponse.ResourceResponse;
-import org.apache.juli.logging.Log;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -15,14 +17,6 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 @Service
 public class AWSService {
 
@@ -30,8 +24,7 @@ public class AWSService {
     private final S3Client s3Client;
     private final String bucketName;
 
-    Logger logger;
-
+ 
     public AWSService(@Value("${aws.access.id}") String accessKeyId,
                      @Value("${aws.secret.key}") String secretKey,
                      @Value("${aws.region}") String region,
