@@ -1,18 +1,27 @@
 package com.mulei.blisscart.service;
 
+import com.mulei.blisscart.reponse.ResourceResponse;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class AWSService {
@@ -20,6 +29,8 @@ public class AWSService {
 
     private final S3Client s3Client;
     private final String bucketName;
+
+    Logger logger;
 
     public AWSService(@Value("${aws.access.id}") String accessKeyId,
                      @Value("${aws.secret.key}") String secretKey,
@@ -50,4 +61,29 @@ public class AWSService {
             throw new IOException("Error uploading file to S3", e);
         }
     }
+
+    public  Boolean deleteFile(String url){
+
+        try{
+
+
+
+            DeleteObjectRequest deleteObjectRequest=  DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(url).build();
+
+           DeleteObjectResponse response = s3Client.deleteObject(deleteObjectRequest);
+        //    System.out.println("a");
+           // logger.log(Level.parse("INFO"), "response.toString()");
+            System.out.println("response");
+             System.out.println(response.deleteMarker());
+           // logger.log(Level.parse("INFO"), response.toString());
+           return response.deleteMarker();
+
+
+        }catch(S3Exception e){
+            return false;
+        }
+    }
+
 }

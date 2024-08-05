@@ -3,21 +3,25 @@ package com.mulei.blisscart.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.mulei.blisscart.dto.ProductImageDTO;
-import com.mulei.blisscart.model.Product_Image;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.mulei.blisscart.dto.ProductCreationDTO;
 import com.mulei.blisscart.dto.ProductDTO;
+import com.mulei.blisscart.dto.ProductImageDTO;
 import com.mulei.blisscart.model.Product;
+import com.mulei.blisscart.model.Product_Image;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.repository.CategoryRepository;
+import com.mulei.blisscart.repository.ProductImageRepository;
 import com.mulei.blisscart.repository.ProductRepository;
 import com.mulei.blisscart.repository.VendorRepository;
 
 import jakarta.transaction.Transactional;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class ProductService {
@@ -28,12 +32,25 @@ public class ProductService {
     private final VendorRepository vendorRepository;
 
     private final CategoryRepository categoryRepository;
- 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService) {
+
+
+
+    private final ProductImageRepository productImageRepository;
+
+    @Value("${amazon.s3.bucket-name}")
+    String bucketName;
+
+    @Autowired
+    private final AWSService awsService;
+
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository ) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
-     }
+         this.productImageRepository = productImageRepository;
+        this.awsService = awsService;
+    }
 
 
     public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls){
@@ -131,7 +148,29 @@ public class ProductService {
     }
 
 
+    public ResourceResponse deleteFile(String url) throws Exception{
 
+        try{
+           Boolean successful_deletion=   awsService.deleteFile(url);
+
+            if(successful_deletion){
+
+                    return new ResourceResponse(null, "Deleted Successfully", true);
+
+
+            }else{
+                return new ResourceResponse(null, "Unable to delete", false);
+
+            }
+
+
+
+        } catch (S3Exception e) {
+            return new ResourceResponse(null, "Unable to delete", false);
+
+        }
+
+    }
     private ProductDTO convertToDTO(Product product) {
 
         List<ProductImageDTO> imageUrls = product.getImages().stream()

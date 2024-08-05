@@ -1,5 +1,6 @@
 package com.mulei.blisscart.controller;
 
+import com.mulei.blisscart.dto.ProductImageDTO;
 import com.mulei.blisscart.service.AWSService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,11 +68,17 @@ public class ProductController {
       
     }
 
+    @PostMapping("/deletePhoto")
+    public ResponseEntity<ResourceResponse> deletePhoto(@RequestBody ProductImageDTO productImageDTO) throws Exception {
 
+        return ResponseEntity.ok(productService.deleteFile(productImageDTO.getImage_url()));
+    }
     @PutMapping("/updateQuantity")
     public ResponseEntity<ResourceResponse> updateQuantity(@RequestBody ProductDTO productUpdateDTO) {
               
             return ResponseEntity.ok( productService.updateQuantity(productUpdateDTO.getId(), productUpdateDTO.getQuantity()));
   
 }
+
+//@DeleteMapping(/)
 }
