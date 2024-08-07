@@ -12,12 +12,18 @@ import org.springframework.stereotype.Service;
 import com.mulei.blisscart.dto.ProductCreationDTO;
 import com.mulei.blisscart.dto.ProductDTO;
 import com.mulei.blisscart.dto.ProductImageDTO;
+import com.mulei.blisscart.dto.ProductVariationStockDTO;
+import com.mulei.blisscart.dto.VariationDTO;
 import com.mulei.blisscart.model.Product;
+import com.mulei.blisscart.model.ProductStock;
+import com.mulei.blisscart.model.ProductVariation;
 import com.mulei.blisscart.model.Product_Image;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.repository.CategoryRepository;
 import com.mulei.blisscart.repository.ProductImageRepository;
 import com.mulei.blisscart.repository.ProductRepository;
+import com.mulei.blisscart.repository.ProductStockRepository;
+import com.mulei.blisscart.repository.ProductVariationRepository;
 import com.mulei.blisscart.repository.VendorRepository;
 
 import jakarta.transaction.Transactional;
@@ -33,6 +39,9 @@ public class ProductService {
 
     private final CategoryRepository categoryRepository;
 
+    private final ProductStockRepository productStockRepository;
+
+    private final ProductVariationRepository productVariationRepository;
 
 
     private final ProductImageRepository productImageRepository;
@@ -44,12 +53,14 @@ public class ProductService {
     private final AWSService awsService;
 
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository ) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository, com.mulei.blisscart.repository.ProductStockRepository productStockRepository, com.mulei.blisscart.repository.ProductVariationRepository productVariationRepository) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
          this.productImageRepository = productImageRepository;
         this.awsService = awsService;
+        this.productStockRepository = productStockRepository;
+        this.productVariationRepository = productVariationRepository;
     }
 
 
@@ -80,12 +91,34 @@ public class ProductService {
         product.setCategory(categoryRepository.findById(request.getCategoryId()).get());
         product.setVendor(vendorRepository.findById(request.getVendorId()).get());
         product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setQuantity(request.getQuantity());
+      //  product.setPrice(request.getPrice());
+       // product.setQuantity(request.getQuantity());
         product.setDescription(request.getDescription());
        product.setImages(images);
 
-        productRepository.save(product);      
+        productRepository.save(product);   
+        
+           for (VariationDTO variationDTO : request.getVariations()) {
+            ProductVariation variation = new ProductVariation();
+            variation.setAttribute(variationDTO.getAttribute());
+            variation.setValue(variationDTO.getValue());
+            variation.setProduct(product);
+            variation = productVariationRepository.save(variation);
+
+            // Save stock for each variation
+            for (ProductVariationStockDTO stockDTO : request.getStock()) {
+                if (stockDTO.getAttribute().equals(variationDTO.getAttribute())
+                        && stockDTO.getValue().equals(variationDTO.getValue())) {
+                    ProductStock stock = new ProductStock();
+                    stock.setAttribute(stockDTO.getAttribute());
+                    stock.setValue(stockDTO.getValue());
+                    stock.setQuantity(stockDTO.getQuantity());
+                    stock.setProduct(product);
+                    productStockRepository.save(stock);
+                }
+            }
+        }
+
 
         return new ResourceResponse(null, "Added Successfully", true);
 
@@ -184,8 +217,11 @@ public class ProductService {
        productDTO.setCategoryId(product.getCategory().getId());
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setQuantity(product.getQuantity());
+        productDTO.setVariations(
+            product.getVariations()
+            .stream().map(this::convertVariationToDTO).collect(Collectors.toList()));
+        productDTO.setStock(product.getStock().stream().map(this::convertStockToDTO).collect(Collectors.toList()));
+     
         productDTO.setImages(imageUrls);
         return productDTO;
     }
@@ -198,6 +234,19 @@ public class ProductService {
         );
     }
 
-  
+    private VariationDTO convertVariationToDTO(ProductVariation variation) {
+        VariationDTO variationDTO = new VariationDTO();
+        variationDTO.setAttribute(variation.getAttribute());
+        variationDTO.setValue(variation.getValue());
+        return variationDTO;
+    }
 
+    private ProductVariationStockDTO convertStockToDTO(ProductStock stock) {
+        ProductVariationStockDTO stockDTO = new ProductVariationStockDTO();
+        stockDTO.setAttribute(stock.getAttribute());
+        stockDTO.setValue(stock.getValue());
+        stockDTO.setQuantity(stock.getQuantity());
+        return stockDTO;
+    }
+    
 }

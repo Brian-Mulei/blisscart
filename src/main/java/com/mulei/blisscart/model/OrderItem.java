@@ -26,6 +26,11 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "product_variation_id", nullable = false)
+    private ProductVariation variation;
+
+
     @Column(name = "quantity")
     private Integer quantity;
 
@@ -59,6 +64,18 @@ public class OrderItem {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+
+
+    public ProductVariation getVariation() {
+        return variation;
+    }
+
+    public void setVariation(ProductVariation variation) {
+        this.variation = variation;
+    }
+
+
 
     public Integer getQuantity() {
         return quantity;

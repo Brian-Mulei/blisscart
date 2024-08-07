@@ -9,11 +9,11 @@ public class ProductDTO {
     private Long categoryId;
     private String name;
     private String description;
-    private Double price;
-    private Integer quantity;
+  
 
     private List<ProductImageDTO> images;
-    
+    private List<VariationDTO> variations;
+    private List<ProductVariationStockDTO> stock;
 
 //    public ProductDTO(Long categoryId, String description,   String name, Double price, Integer quantity, Long vendorId) {
 //        this.categoryId = categoryId;
@@ -58,23 +58,7 @@ public class ProductDTO {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
+ 
     public Long getId() {
         return id;
     }
@@ -89,5 +73,23 @@ public class ProductDTO {
 
     public void setImages(List<ProductImageDTO> images) {
         this.images = images;
+    }
+
+
+    public List<VariationDTO> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<VariationDTO> variations) {
+        this.variations = variations;
+    }
+
+
+    public List<ProductVariationStockDTO> getStock() {
+        return stock;
+    }
+
+    public void setStock(List<ProductVariationStockDTO> stock) {
+        this.stock = stock;
     }
 }

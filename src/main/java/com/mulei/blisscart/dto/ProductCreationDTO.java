@@ -16,6 +16,8 @@ public class ProductCreationDTO {
     private Integer quantity;
     List<MultipartFile> images;
 
+    private List<VariationDTO> variations;
+    private List<ProductVariationStockDTO> stock;
 
     public Long getVendorId() {
         return vendorId;
@@ -79,5 +81,22 @@ public class ProductCreationDTO {
 
     public void setImages(List<MultipartFile> images) {
         this.images = images;
+    }
+
+    public List<VariationDTO> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<VariationDTO> variations) {
+        this.variations = variations;
+    }
+
+
+    public List<ProductVariationStockDTO> getStock() {
+        return stock;
+    }
+
+    public void setStock(List<ProductVariationStockDTO> stock) {
+        this.stock = stock;
     }
 }

@@ -1,18 +1,23 @@
 package com.mulei.blisscart.controller;
 
-import com.mulei.blisscart.dto.ProductImageDTO;
-import com.mulei.blisscart.service.AWSService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.mulei.blisscart.dto.ProductCreationDTO;
-import com.mulei.blisscart.dto.ProductDTO;
-import com.mulei.blisscart.reponse.ResourceResponse;
-import com.mulei.blisscart.service.ProductService;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mulei.blisscart.dto.ProductCreationDTO;
+import com.mulei.blisscart.dto.ProductImageDTO;
+import com.mulei.blisscart.reponse.ResourceResponse;
+import com.mulei.blisscart.service.AWSService;
+import com.mulei.blisscart.service.ProductService;
 
 
 @RestController
@@ -60,25 +65,25 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts( page,size));
     }
     
-  @PutMapping("/updatePrice")
-    public ResponseEntity<ResourceResponse> updatePrice(@RequestBody ProductDTO productDTO) {
+//   @PutMapping("/updatePrice")
+//     public ResponseEntity<ResourceResponse> updatePrice(@RequestBody ProductDTO productDTO) {
  
-        return ResponseEntity.ok(productService.updatePrice(productDTO.getId(), productDTO.getPrice()))
-        ;
+//         return ResponseEntity.ok(productService.updatePrice(productDTO.getId(), productDTO.getPrice()))
+//         ;
       
-    }
+//     }
 
     @PostMapping("/deletePhoto")
     public ResponseEntity<ResourceResponse> deletePhoto(@RequestBody ProductImageDTO productImageDTO) throws Exception {
 
         return ResponseEntity.ok(productService.deleteFile(productImageDTO.getImage_url()));
     }
-    @PutMapping("/updateQuantity")
-    public ResponseEntity<ResourceResponse> updateQuantity(@RequestBody ProductDTO productUpdateDTO) {
+//     @PutMapping("/updateQuantity")
+//     public ResponseEntity<ResourceResponse> updateQuantity(@RequestBody ProductDTO productUpdateDTO) {
               
-            return ResponseEntity.ok( productService.updateQuantity(productUpdateDTO.getId(), productUpdateDTO.getQuantity()));
+//             return ResponseEntity.ok( productService.updateQuantity(productUpdateDTO.getId(), productUpdateDTO.getQuantity()));
   
-}
+// }
 
 //@DeleteMapping(/)
 }

@@ -1,9 +1,18 @@
 package com.mulei.blisscart.model;
 
-import jakarta.persistence.*;
-
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "product")
@@ -24,26 +33,28 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable=true)
+    @Column(name = "description", nullable = true)
     private String description;
-
-    @Column(name = "price", nullable = false)
-    private Double price;
-
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
+ 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product_Image> images;
 
-    // public Product(String description, Long id, String name, Category category, Double price, Integer quantity, Vendor vendor) {
-    //     this.description = description;
-    //     this.id = id;
-    //     this.name = name;
-    //     this.price = price;
-    //     this.quantity = quantity;
-    //     this.vendor = vendor;
-    //     this.category=category;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductVariation> variations;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    private List<ProductStock> stock;
+
+    // public Product(String description, Long id, String name, Category category,
+    // Double price, Integer quantity, Vendor vendor) {
+    // this.description = description;
+    // this.id = id;
+    // this.name = name;
+    // this.price = price;
+    // this.quantity = quantity;
+    // this.vendor = vendor;
+    // this.category=category;
     // }
 
     // Getters and setters
@@ -80,22 +91,7 @@ public class Product {
         this.description = description;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
+ 
     public Category getCategory() {
         return category;
     }
@@ -110,5 +106,23 @@ public class Product {
 
     public void setImages(List<Product_Image> images) {
         this.images = images;
+    }
+
+
+        public List<ProductVariation> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<ProductVariation> variations) {
+        this.variations = variations;
+    }
+
+
+    public List<ProductStock> getStock() {
+        return stock;
+    }
+
+    public void setStock(List<ProductStock> stock) {
+        this.stock = stock;
     }
 }
