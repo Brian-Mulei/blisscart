@@ -19,13 +19,14 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     Optional<Order> findByCustomer(User customer);
 
-    
 
-    @Query("SELECT new com.mulei.blisscart.dto.OrderDTO(p.id, p.name, o.orderTime, COUNT(oi.id)) \" +\n" + //
-                "           \"FROM Product p \" +\n" + //
-                "           \"JOIN OrderItem oi ON p.id = oi.product.id \" +\n" + //
-                "           \"JOIN Order o ON oi.order.id = o.id \" +\n" + //
-                "           \"WHERE p.vendor.id = :vendorId \" +\n" + //
-                "           \"GROUP BY p.id, p.name, o.orderDate \" +\n" + //
-                "           \"ORDER BY o.orderDate DESC, COUNT(oi.id) DESC")
-    List<Product> findProductsSoldByVendor(@Param("vendorId") Long vendorId);}
+//    @Query("SELECT new com.mulei.blisscart.dto.OrderDTO(p.id, p.name, o.orderTime, COUNT(oi.id)) \" +\n" + //
+//                "           \"FROM Product p \" +\n" + //
+//                "           \"JOIN OrderItem oi ON p.id = oi.product.id \" +\n" + //
+//                "           \"JOIN Order o ON oi.order.id = o.id \" +\n" + //
+//                "           \"WHERE p.vendor.id = :vendorId \" +\n" + //
+//                "           \"GROUP BY p.id, p.name, o.orderDate \" +\n" + //
+//                "           \"ORDER BY o.orderDate DESC, COUNT(oi.id) DESC")
+//    List<Product> findProductsSoldByVendor(@Param("vendorId") Long vendorId);}
+
+}

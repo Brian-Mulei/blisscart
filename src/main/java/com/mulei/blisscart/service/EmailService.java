@@ -18,11 +18,10 @@ public class EmailService {
 
     public void sendEmail(String email, String subject, String content) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
 
+        MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setFrom("brianmulei0@gmail.com", "Bliss Cart");
         helper.setTo(email);
-
         helper.setSubject(subject);
         helper.setText(content, true);
 
