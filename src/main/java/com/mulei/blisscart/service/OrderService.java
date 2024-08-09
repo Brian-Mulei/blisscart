@@ -7,27 +7,32 @@ import com.mulei.blisscart.dto.OrderItemDTO;
 import com.mulei.blisscart.enums.OrderStatus;
 import com.mulei.blisscart.model.Order;
 import com.mulei.blisscart.model.OrderItem;
-import com.mulei.blisscart.model.Product;
+import com.mulei.blisscart.model.ProductVariation;
 import com.mulei.blisscart.model.User;
 import com.mulei.blisscart.repository.OrderRepository;
 import com.mulei.blisscart.repository.ProductRepository;
+import com.mulei.blisscart.repository.ProductVariationRepository;
 import com.mulei.blisscart.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
 public class OrderService {
 
-     private final OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final ProductVariationRepository productVariationRepository;
     private final UserRepository userRepository;
 
-     public OrderService(OrderRepository orderRepository, ProductRepository productRepository,UserRepository userRepository) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
+            UserRepository userRepository,
+            com.mulei.blisscart.repository.ProductVariationRepository productVariationRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.productVariationRepository = productVariationRepository;
     }
 
-        @Transactional
+    @Transactional
     public Order createOrder(OrderDTO orderDTO) {
         // Create new order
         Order order = new Order();
@@ -36,23 +41,26 @@ public class OrderService {
 
         // Add order items
         for (OrderItemDTO itemDTO : orderDTO.getItems()) {
-            Product product = productRepository.findById(itemDTO.getProductId())
-                                               .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+            ProductVariation variant = productVariationRepository.findById(itemDTO.getproductVariationId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Variant not found"));
 
             // Check if there is enough stock
-            if (product.getQuantity() < itemDTO.getQuantity()) {
-                throw new IllegalArgumentException("Insufficient stock for product: " + product.getName());
+            if (variant.getQuantity() < itemDTO.getQuantity()) {
+                throw new IllegalArgumentException(
+                        "Insufficient stock for product: " + variant.getVariationDescription());
             }
 
             // Update product quantity
-            product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
-            productRepository.save(product);
+            variant.setQuantity(variant.getQuantity() - itemDTO.getQuantity());
+            productVariationRepository.save(variant);
 
             // Create and add order item
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
-            orderItem.setProduct(product);
+            orderItem.setVariation(variant);
+            orderItem.setPerPrice(itemDTO.getPerPrice());
             orderItem.setQuantity(itemDTO.getQuantity());
+            orderItem.setSubTotal(itemDTO.getSubTotal());
 
             order.getItems().add(orderItem);
         }
@@ -63,7 +71,7 @@ public class OrderService {
 
     private User findCustomerById(Long customerId) {
 
-        User customer =   userRepository.findById(customerId).get();
+        User customer = userRepository.findById(customerId).get();
 
         return customer;
         // Implement customer retrieval logic

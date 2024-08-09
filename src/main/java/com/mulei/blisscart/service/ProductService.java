@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.mulei.blisscart.dto.ProductCreationDTO;
 import com.mulei.blisscart.dto.ProductDTO;
 import com.mulei.blisscart.dto.ProductImageDTO;
+import com.mulei.blisscart.dto.ProductVariationDTO;
 import com.mulei.blisscart.model.Product;
-import com.mulei.blisscart.model.Product_Image;
+import com.mulei.blisscart.model.ProductImage;
+import com.mulei.blisscart.model.ProductVariation;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.repository.CategoryRepository;
 import com.mulei.blisscart.repository.ProductImageRepository;
@@ -25,15 +27,12 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class ProductService {
-  
+
     private final ProductRepository productRepository;
 
-  
     private final VendorRepository vendorRepository;
 
     private final CategoryRepository categoryRepository;
-
-
 
     private final ProductImageRepository productImageRepository;
 
@@ -43,127 +42,123 @@ public class ProductService {
     @Autowired
     private final AWSService awsService;
 
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository ) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
+            VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
-         this.productImageRepository = productImageRepository;
+        this.productImageRepository = productImageRepository;
         this.awsService = awsService;
     }
 
+    public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls) {
 
-    public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls){
-
-        if(vendorRepository.findById(request.getVendorId()).isEmpty()){
+        if (vendorRepository.findById(request.getVendorId()).isEmpty()) {
             return new ResourceResponse(null, "Vendor not found", false);
         }
 
-        if(categoryRepository.findById(request.getCategoryId()).isEmpty()){
+        if (categoryRepository.findById(request.getCategoryId()).isEmpty()) {
             return new ResourceResponse(null, "Invalid Category", false);
         }
 
-
         Product product = new Product();
 
-
-        List<Product_Image> images = image_urls.stream()
+        List<ProductImage> images = image_urls.stream()
                 .map(url -> {
-                    Product_Image image = new Product_Image();
+                    ProductImage image = new ProductImage();
                     image.setImage_url(url);
                     image.setProduct(product);
                     return image;
                 })
                 .collect(Collectors.toList());
 
+        List<ProductVariation> variations = request.getVariations().stream()
+                .map(variant -> {
+                    ProductVariation variation = new ProductVariation();
+
+                    variation.setProduct(product);
+                    variation.setPrice(variant.getPrice());
+                    variation.setQuantity(variant.getQuantity());
+                    variation.setVariationDescription(variant.getVariationDescription());
+
+                    return variation;
+                })
+                .collect(Collectors.toList());
 
         product.setCategory(categoryRepository.findById(request.getCategoryId()).get());
         product.setVendor(vendorRepository.findById(request.getVendorId()).get());
         product.setName(request.getName());
-        product.setPrice(request.getPrice());
-        product.setQuantity(request.getQuantity());
-        product.setDescription(request.getDescription());
-       product.setImages(images);
 
-        productRepository.save(product);      
+        product.setDescription(request.getDescription());
+        product.setImages(images);
+        product.setVariations(variations);
+
+        productRepository.save(product);
 
         return new ResourceResponse(null, "Added Successfully", true);
 
     }
-    
-    public ResourceResponse getProducts(int page, int size){
 
-     
-        Page<Product>products = productRepository.findAll(PageRequest.of(page, size));
+    public ResourceResponse getProducts(int page, int size) {
 
-    //    return new ResourceResponse(products, "Added Successfully", true);
+        Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
+
+        // return new ResourceResponse(products, "Added Successfully", true);
         List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
-
-
 
         return new ResourceResponse(productDTOs, "Fetched successfully", true);
     }
 
-
-
-    
     @Transactional
     public ResourceResponse updatePrice(Long productId, Double newPrice) {
         try {
 
-            if(productRepository.findById(productId).isEmpty()){
+            if (productRepository.findById(productId).isEmpty()) {
                 return new ResourceResponse(null, "Product not found", false);
             }
 
-             productRepository.updatePrice(productId, newPrice);         
-             return new ResourceResponse(null, "Updated Successfully", true);
- 
-
-        } catch (Exception e) {
-        
-            return new ResourceResponse( null, "Failed to Update", false);
-
-        }
-    }
-
-
-    @Transactional
-    public ResourceResponse updateQuantity(Long productId, Integer newQuantity){
-
-        try {
-            if(productRepository.findById(productId).isEmpty()){
-                return new ResourceResponse(null, "Product not found", false);
-            }
-
-             productRepository.updateQuantity(productId, newQuantity);        
-             return new ResourceResponse(null, "Updated Successfully", true);
- 
+            productRepository.updatePrice(productId, newPrice);
+            return new ResourceResponse(null, "Updated Successfully", true);
 
         } catch (Exception e) {
 
             return new ResourceResponse(null, "Failed to Update", false);
 
-        }  
+        }
+    }
+
+    @Transactional
+    public ResourceResponse updateQuantity(Long productId, Integer newQuantity) {
+
+        try {
+            if (productRepository.findById(productId).isEmpty()) {
+                return new ResourceResponse(null, "Product not found", false);
+            }
+
+            productRepository.updateQuantity(productId, newQuantity);
+            return new ResourceResponse(null, "Updated Successfully", true);
+
+        } catch (Exception e) {
+
+            return new ResourceResponse(null, "Failed to Update", false);
+
+        }
 
     }
 
+    public ResourceResponse deleteFile(String url) throws Exception {
 
-    public ResourceResponse deleteFile(String url) throws Exception{
+        try {
+            Boolean successful_deletion = awsService.deleteFile(url);
 
-        try{
-           Boolean successful_deletion=   awsService.deleteFile(url);
+            if (successful_deletion) {
 
-            if(successful_deletion){
+                return new ResourceResponse(null, "Deleted Successfully", true);
 
-                    return new ResourceResponse(null, "Deleted Successfully", true);
-
-
-            }else{
+            } else {
                 return new ResourceResponse(null, "Unable to delete", false);
 
             }
-
-
 
         } catch (S3Exception e) {
             return new ResourceResponse(null, "Unable to delete", false);
@@ -171,33 +166,46 @@ public class ProductService {
         }
 
     }
+
     private ProductDTO convertToDTO(Product product) {
 
         List<ProductImageDTO> imageUrls = product.getImages().stream()
                 .map(this::convertToImageDTO)
                 .toList();
 
-        ProductDTO productDTO = new ProductDTO(
-        );
+        List<ProductVariationDTO> variations = product.getVariations().stream()
+                .map(this::convertToProductVariation)
+                .toList();
+
+        ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
-       productDTO.setVendorId(product.getVendor().getId());
-       productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setVendorId(product.getVendor().getId());
+        productDTO.setCategoryId(product.getCategory().getId());
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setQuantity(product.getQuantity());
+        // productDTO.setPrice(product.getPrice());
+        // productDTO.setQuantity(product.getQuantity());
         productDTO.setImages(imageUrls);
+        productDTO.setVariations(variations);
         return productDTO;
     }
 
-    private ProductImageDTO convertToImageDTO(Product_Image image) {
-        return new  ProductImageDTO
-            (
+    private ProductImageDTO convertToImageDTO(ProductImage image) {
+        return new ProductImageDTO(
                 image.getId(),
-                image.getImage_url()
-        );
+                image.getImage_url());
     }
 
-  
+    private ProductVariationDTO convertToProductVariation(ProductVariation variation) {
+
+        return new ProductVariationDTO(
+                variation.getId(),
+                variation.getVariationDescription(),
+                variation.getPrice(),
+                variation.getQuantity()
+
+        );
+
+    }
 
 }

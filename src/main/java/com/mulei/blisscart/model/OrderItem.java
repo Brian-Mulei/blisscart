@@ -23,8 +23,8 @@ public class OrderItem {
 
 
     @OneToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @JoinColumn(name = "product_variation_id", nullable = false)
+    private ProductVariation variation;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -52,13 +52,7 @@ public class OrderItem {
         this.order = order;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+ 
 
     public Integer getQuantity() {
         return quantity;
@@ -82,6 +76,14 @@ public class OrderItem {
 
     public void setSubTotal(Double subTotal) {
         this.subTotal = subTotal;
+    }
+
+    public ProductVariation getVariation() {
+        return variation;
+    }
+
+    public void setVariation(ProductVariation variation) {
+        this.variation = variation;
     }
 
     

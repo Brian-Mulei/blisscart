@@ -13,6 +13,8 @@ public class ProductDTO {
     private Integer quantity;
 
     private List<ProductImageDTO> images;
+  private   List<ProductVariationDTO> variations;
+
     
 
 //    public ProductDTO(Long categoryId, String description,   String name, Double price, Integer quantity, Long vendorId) {
@@ -90,4 +92,15 @@ public class ProductDTO {
     public void setImages(List<ProductImageDTO> images) {
         this.images = images;
     }
+
+    public List<ProductVariationDTO> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<ProductVariationDTO> variations) {
+        this.variations = variations;
+    }
+
+
+    
 }
