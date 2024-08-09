@@ -20,6 +20,7 @@ import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.repository.CategoryRepository;
 import com.mulei.blisscart.repository.ProductImageRepository;
 import com.mulei.blisscart.repository.ProductRepository;
+import com.mulei.blisscart.repository.ProductVariationRepository;
 import com.mulei.blisscart.repository.VendorRepository;
 
 import jakarta.transaction.Transactional;
@@ -36,19 +37,21 @@ public class ProductService {
 
     private final ProductImageRepository productImageRepository;
 
+    private final ProductVariationRepository productVariationRepository;
+
     @Value("${amazon.s3.bucket-name}")
     String bucketName;
 
     @Autowired
     private final AWSService awsService;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
-            VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, VendorRepository vendorRepository, AWSService awsService, ProductImageRepository productImageRepository, com.mulei.blisscart.repository.ProductVariationRepository productVariationRepository) {
         this.productRepository = productRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository = categoryRepository;
         this.productImageRepository = productImageRepository;
         this.awsService = awsService;
+        this.productVariationRepository = productVariationRepository;
     }
 
     public ResourceResponse addProduct(ProductCreationDTO request, List<String> image_urls) {
@@ -110,14 +113,14 @@ public class ProductService {
     }
 
     @Transactional
-    public ResourceResponse updatePrice(Long productId, Double newPrice) {
+    public ResourceResponse updatePrice(Long productVariationId, Double newPrice) {
         try {
 
-            if (productRepository.findById(productId).isEmpty()) {
+            if (productVariationRepository.findById(productVariationId).isEmpty()) {
                 return new ResourceResponse(null, "Product not found", false);
             }
 
-            productRepository.updatePrice(productId, newPrice);
+            productVariationRepository.updatePrice(productVariationId, newPrice);
             return new ResourceResponse(null, "Updated Successfully", true);
 
         } catch (Exception e) {
@@ -128,14 +131,14 @@ public class ProductService {
     }
 
     @Transactional
-    public ResourceResponse updateQuantity(Long productId, Integer newQuantity) {
+    public ResourceResponse updateQuantity(Long productVariationId, Integer newQuantity) {
 
         try {
-            if (productRepository.findById(productId).isEmpty()) {
+            if (productVariationRepository.findById(productVariationId).isEmpty()) {
                 return new ResourceResponse(null, "Product not found", false);
             }
 
-            productRepository.updateQuantity(productId, newQuantity);
+            productVariationRepository.updateQuantity(productVariationId, newQuantity);
             return new ResourceResponse(null, "Updated Successfully", true);
 
         } catch (Exception e) {
