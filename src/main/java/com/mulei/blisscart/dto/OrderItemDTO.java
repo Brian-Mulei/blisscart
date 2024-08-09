@@ -5,7 +5,7 @@ public class OrderItemDTO {
     private Long id;
  
   
-    private Long productId;
+    private Long productVariationId;
 
     private Integer quantity;
 
@@ -21,12 +21,12 @@ public class OrderItemDTO {
         this.id = id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getproductVariationId() {
+        return productVariationId;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setproductVariationId(Long productVariationId) {
+        this.productVariationId = productVariationId;
     }
 
     public Integer getQuantity() {
@@ -53,7 +53,5 @@ public class OrderItemDTO {
         this.subTotal = subTotal;
     }
 
-
-
-    
+ 
 }
