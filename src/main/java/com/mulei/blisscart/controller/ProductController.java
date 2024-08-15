@@ -30,7 +30,7 @@ public class ProductController {
 
 
     @PostMapping("")
-    public ResponseEntity<ResourceResponse> addProduct(@ModelAttribute ProductCreationDTO request) {
+    public ResponseEntity<ResourceResponse> addProduct(@RequestBody ProductCreationDTO request) {
 
         try{
         List<String> imageUrls = request.getImages().stream()
@@ -60,25 +60,25 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts( page,size));
     }
     
-  @PutMapping("/updatePrice")
-    public ResponseEntity<ResourceResponse> updatePrice(@RequestBody ProductDTO productDTO) {
- 
-        return ResponseEntity.ok(productService.updatePrice(productDTO.getId(), productDTO.getPrice()))
-        ;
-      
-    }
+//  @PutMapping("/updatePrice")
+//    public ResponseEntity<ResourceResponse> updatePrice(@RequestBody ProductDTO productDTO) {
+//
+//        return ResponseEntity.ok(productService.updatePrice(productDTO.getId(), productDTO.getPrice()))
+//        ;
+//
+//    }
 
     @PostMapping("/deletePhoto")
     public ResponseEntity<ResourceResponse> deletePhoto(@RequestBody ProductImageDTO productImageDTO) throws Exception {
 
         return ResponseEntity.ok(productService.deleteFile(productImageDTO.getImage_url()));
     }
-    @PutMapping("/updateQuantity")
-    public ResponseEntity<ResourceResponse> updateQuantity(@RequestBody ProductDTO productUpdateDTO) {
-              
-            return ResponseEntity.ok( productService.updateQuantity(productUpdateDTO.getId(), productUpdateDTO.getQuantity()));
-  
-}
+//    @PutMapping("/updateQuantity")
+//    public ResponseEntity<ResourceResponse> updateQuantity(@RequestBody ProductDTO productUpdateDTO) {
+//
+//            return ResponseEntity.ok( productService.updateQuantity(productUpdateDTO.getId(), productUpdateDTO.getQuantity()));
+//
+//}
 
 //@DeleteMapping(/)
 }

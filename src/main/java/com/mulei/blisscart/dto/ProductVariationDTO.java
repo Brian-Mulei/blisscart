@@ -4,8 +4,10 @@ public class ProductVariationDTO {
 
     private Long id;
 
+   // private Long productId;
 
-    private String variationDescription; 
+
+    private String variationDescription;
     
     private Double price;
 
@@ -63,7 +65,14 @@ public class ProductVariationDTO {
         this.variationDescription = variationDescription;
     }
 
-
-
-    
+//    public Long getProductId() {
+//        return productId;
+//    }
+//
+//    public void setProductId(Long productId) {
+//        this.productId = productId;
+//    }
+//
+//
+//
 }

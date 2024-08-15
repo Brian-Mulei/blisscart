@@ -19,7 +19,7 @@ public interface ProductVariationRepository  extends JpaRepository<ProductVariat
     void updateQuantity(@Param("productVariationId") Long productVariationId, @Param("quantity") Integer quantity);
 
     @Modifying
-    @Query("DELETE ProductVariation p WHERE p.id =productVariationId")
+    @Query("DELETE ProductVariation p WHERE p.id = :productVariationId")
     void deleteVariation(@Param("productVariationId") Long productVariationId );
 
 }

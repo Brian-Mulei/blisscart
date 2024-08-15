@@ -75,6 +75,17 @@ public class ProductService {
                 })
                 .collect(Collectors.toList());
 
+
+
+        product.setCategory(categoryRepository.findById(request.getCategoryId()).get());
+        product.setVendor(vendorRepository.findById(request.getVendorId()).get());
+        product.setName(request.getName());
+
+        product.setDescription(request.getDescription());
+        product.setImages(images);
+
+        productRepository.save(product);
+
         List<ProductVariation> variations = request.getVariations().stream()
                 .map(variant -> {
                     ProductVariation variation = new ProductVariation();
@@ -88,16 +99,9 @@ public class ProductService {
                 })
                 .collect(Collectors.toList());
 
-        product.setCategory(categoryRepository.findById(request.getCategoryId()).get());
-        product.setVendor(vendorRepository.findById(request.getVendorId()).get());
-        product.setName(request.getName());
-
-        product.setDescription(request.getDescription());
-        product.setImages(images);
         product.setVariations(variations);
 
         productRepository.save(product);
-
         return new ResourceResponse(null, "Added Successfully", true);
 
     }
@@ -186,8 +190,7 @@ public class ProductService {
         productDTO.setCategoryId(product.getCategory().getId());
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
-        // productDTO.setPrice(product.getPrice());
-        // productDTO.setQuantity(product.getQuantity());
+
         productDTO.setImages(imageUrls);
         productDTO.setVariations(variations);
         return productDTO;

@@ -15,7 +15,9 @@ import com.mulei.blisscart.repository.ProductVariationRepository;
 import com.mulei.blisscart.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
