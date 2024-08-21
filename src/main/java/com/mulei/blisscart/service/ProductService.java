@@ -86,25 +86,33 @@ public class ProductService {
 
         productRepository.save(product);
 
-        List<ProductVariation> variations = request.getVariations().stream()
-                .map(variant -> {
-                    ProductVariation variation = new ProductVariation();
+        if(!request.getVariations().isEmpty()){
+            List<ProductVariation> variations = request.getVariations().stream()
+            .map(variant -> {
+                ProductVariation variation = new ProductVariation();
 
-                    variation.setProduct(product);
-                    variation.setPrice(variant.getPrice());
-                    variation.setQuantity(variant.getQuantity());
-                    variation.setVariationDescription(variant.getVariationDescription());
+                variation.setProduct(product);
+                variation.setPrice(variant.getPrice());
+                variation.setQuantity(variant.getQuantity());
+                variation.setVariationDescription(variant.getVariationDescription());
 
-                    return variation;
-                })
-                .collect(Collectors.toList());
+                return variation;
+            })
+            .collect(Collectors.toList());
+            product.setVariations(variations);
 
-        product.setVariations(variations);
+        }
+
 
         productRepository.save(product);
         return new ResourceResponse(null, "Added Successfully", true);
 
     }
+
+
+     
+
+
 
     public ResourceResponse getProducts(int page, int size) {
 
