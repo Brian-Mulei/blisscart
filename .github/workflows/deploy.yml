@@ -20,7 +20,7 @@ jobs:
 
     - name: Test SSH Connection
       run: |
-            'echo "SSH connection successful!"; cd /projects; ls -la'
+            'echo "SSH connection successful!";  ls -la'
 
     - name: Copy files to EC2
       run: |
