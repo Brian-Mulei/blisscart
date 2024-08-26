@@ -24,7 +24,7 @@ jobs:
 
     - name: Copy files to EC2
       run: |
-        scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:/projects/blisscart/
+        scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:/projects/blisscart
 
     - name: SSH into EC2 buil and deploy
       run: |
