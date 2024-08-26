@@ -22,7 +22,7 @@ jobs:
 
       - name: Merge to deployment branch
         if: success()
-        uses: devops-infra/action-git@v1
+        uses: blisscart/action-git@v1
         with:
           args: |
             git config user.name "Brian-Mulei"
