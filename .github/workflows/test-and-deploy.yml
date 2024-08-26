@@ -40,10 +40,12 @@ jobs:
         if: success()
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           args: |
             git config user.name "Brian-Mulei"
             git config user.email "brianmulei0@gmail.com"
             git checkout deployment
+            git pull origin deployment   
             git merge Development
             git push origin deployment
         env:
