@@ -8,6 +8,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      REGION: ${{ secrets.REGION }}
+      BUCKET: ${{ secrets.BUCKET }}
+      AWS_ID: ${{ secrets.AWS_ID }}
+      AWS_KEY: ${{ secrets.AWS_KEY }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
