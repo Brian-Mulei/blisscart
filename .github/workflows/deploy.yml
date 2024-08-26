@@ -24,12 +24,12 @@ jobs:
 
     - name: Copy files to EC2
       run: |
-        scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:/projects/blisscart
+        scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:projects/blisscart
 
     - name: SSH into EC2 buil and deploy
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-        cd /projects/blisscart/
+        cd projects/blisscart/
         docker-compose down
         docker-compose up --build -d
         EOF
