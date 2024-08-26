@@ -20,7 +20,7 @@ jobs:
 
     - name: Test SSH Connection
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} 'echo "SSH connection successful!"; pwd; ls -la'
+        cd /projects; ls -la'
 
     - name: Copy files to EC2
       run: |
