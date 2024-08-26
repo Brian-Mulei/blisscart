@@ -22,7 +22,7 @@ jobs:
 
       - name: Merge to deployment branch
         if: success()
-        uses: actions/action-git@v1
+        uses: actions/checkout@v3
         with:
           args: |
             git config user.name "Brian-Mulei"
