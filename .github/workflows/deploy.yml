@@ -22,7 +22,7 @@ jobs:
       run: |
         scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/projects/blisscart/
 
-    - name: SSH into EC2 and deploy
+    - name: SSH into EC2 buil and deploy
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
         cd /home/ec2-user/projects/blisscart/
