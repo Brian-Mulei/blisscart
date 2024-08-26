@@ -20,11 +20,11 @@ jobs:
 
     - name: Copy files to EC2
       run: |
-        scp -r -o StrictHostKeyChecking=no . ec2-user@<${{ secrets.EC2_HOST }}>:/projects/blisscart
+        scp -r -o StrictHostKeyChecking=no . ec2-user@${{ secrets.EC2_HOST }}:/projects/blisscart
 
     - name: SSH into EC2 and deploy
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@<${{ secrets.EC2_HOST }}> << 'EOF'
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
         cd  projects/blisscart
         docker build -t blisscart-app .
         docker stop blisscart-container || true
