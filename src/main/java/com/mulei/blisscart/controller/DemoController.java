@@ -19,7 +19,7 @@ public class DemoController {
 
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-    @GetMapping("/dem")
+    @GetMapping("/demo")
     public ResponseEntity<String> demo() {
         return ResponseEntity.ok("Hello from unsecured url");
     }
