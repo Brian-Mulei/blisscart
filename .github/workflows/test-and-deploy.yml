@@ -44,6 +44,7 @@ jobs:
           args: |
             git config user.name "Brian-Mulei"
             git config user.email "brianmulei0@gmail.com"
+            git fetch origin
             git checkout deployment
             git pull origin deployment   
             git merge Development
