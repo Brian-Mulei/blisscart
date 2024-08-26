@@ -1,14 +1,12 @@
 package com.mulei.blisscart.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 public class EmailService {
 
@@ -22,7 +20,7 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom("brianmulei0@gmail.com@gmail.com", "Brioz Mukshi");
+        helper.setFrom("brianmulei0@gmail.com", "Bliss Cart");
         helper.setTo(email);
 
         helper.setSubject(subject);

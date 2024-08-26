@@ -17,7 +17,7 @@ public class VendorService {
     private VendorRepository vendorRepository;
 
    
-  @Autowired
+    @Autowired
     private UserRepository userRepository;
 
     public  Optional<Vendor> findVendorByBusinessName(String businessName) {

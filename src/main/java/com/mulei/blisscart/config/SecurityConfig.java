@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 .requestMatchers("/admin_only/**").hasAuthority("ROLE_ADMIN")
                                 .requestMatchers("/sendEmail").permitAll()
                                 .anyRequest()
-                                .authenticated()
+                                .permitAll()
 
                 ).userDetailsService(userDetailsServiceImp)
                 .sessionManagement(session->session

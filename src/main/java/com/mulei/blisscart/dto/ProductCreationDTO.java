@@ -1,9 +1,8 @@
 package com.mulei.blisscart.dto;
 
-import com.mulei.blisscart.model.Product_Image;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class ProductCreationDTO {
 
@@ -15,8 +14,10 @@ public class ProductCreationDTO {
     private String description;
     private Double price;
     private Integer quantity;
+
     List<MultipartFile> images;
 
+    List<ProductVariationDTO> variations;
 
     public Long getVendorId() {
         return vendorId;
@@ -81,4 +82,15 @@ public class ProductCreationDTO {
     public void setImages(List<MultipartFile> images) {
         this.images = images;
     }
+
+    public List<ProductVariationDTO> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<ProductVariationDTO> variations) {
+        this.variations = variations;
+    }
+
+
+    
 }
