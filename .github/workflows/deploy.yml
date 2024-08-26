@@ -25,7 +25,7 @@ jobs:
     - name: SSH into EC2 and deploy
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-        cd  projects/blisscart
+        cd  /home/ec2-user/projects/blisscart
         docker build -t blisscart-app .
         docker stop blisscart-container || true
         docker rm blisscart-container || true
