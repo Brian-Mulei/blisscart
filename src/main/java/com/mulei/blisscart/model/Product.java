@@ -1,5 +1,8 @@
 package com.mulei.blisscart.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 
@@ -32,14 +36,13 @@ public class Product {
     @Column(name = "description", nullable=true)
     private String description;
 
-    @Column(name = "price", nullable = false)
-    private Double price;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
 
-    @Column(name = "image_url", nullable=true)
-    private String image_url;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductVariation> variations;
 
     // public Product(String description, Long id, String name, Category category, Double price, Integer quantity, Vendor vendor) {
     //     this.description = description;
@@ -84,23 +87,7 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
+ 
     public Category getCategory() {
         return category;
     }
@@ -109,11 +96,21 @@ public class Product {
         this.category = category;
     }
 
-    public String getImage_url() {
-        return image_url;
+    public List<ProductImage> getImages() {
+        return images;
     }
 
-    public void setImage_url(String image_url) {
-        this.image_url = image_url;
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
     }
+
+    public List<ProductVariation> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<ProductVariation> variations) {
+        this.variations = variations;
+    }
+
+    
 }

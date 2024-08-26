@@ -1,5 +1,7 @@
 package com.mulei.blisscart.dto;
 
+import java.util.List;
+
 public class ProductDTO {
 
     private Long id;
@@ -7,8 +9,10 @@ public class ProductDTO {
     private Long categoryId;
     private String name;
     private String description;
-    private Double price;
-    private Integer quantity; 
+
+    private List<ProductImageDTO> images;
+  private   List<ProductVariationDTO> variations;
+
     
 
 //    public ProductDTO(Long categoryId, String description,   String name, Double price, Integer quantity, Long vendorId) {
@@ -55,21 +59,7 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public Double getPrice() {
-        return price;
-    }
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
     public Long getId() {
         return id;
@@ -78,4 +68,23 @@ public class ProductDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public List<ProductImageDTO> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProductImageDTO> images) {
+        this.images = images;
+    }
+
+    public List<ProductVariationDTO> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(List<ProductVariationDTO> variations) {
+        this.variations = variations;
+    }
+
+
+    
 }
