@@ -1,7 +1,8 @@
 package com.mulei.blisscart.controller;
 
-import com.mulei.blisscart.service.EmailService;
-import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,15 +10,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
+import com.mulei.blisscart.service.EmailService;
+
+import jakarta.mail.MessagingException;
 
 @RestController
 public class DemoController {
 
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-    @GetMapping("/demo")
+    @GetMapping("/dem")
     public ResponseEntity<String> demo() {
         return ResponseEntity.ok("Hello from unsecured url");
     }
