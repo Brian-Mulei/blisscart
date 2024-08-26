@@ -44,7 +44,7 @@ jobs:
             git config user.name "Brian-Mulei"
             git config user.email "brianmulei0@gmail.com"
             git checkout deployment
-            git merge development
+            git merge Development
             git push origin deployment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
