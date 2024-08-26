@@ -47,7 +47,7 @@ jobs:
             git fetch origin
             git checkout deployment
             git pull origin deployment   
-            git pull origin Development --no-ff --commit -m "Automated merge of development into deployment"
+            git pull origin Development
             git push origin deployment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
