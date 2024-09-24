@@ -110,10 +110,6 @@ public class ProductService {
     }
 
 
-     
-
-
-
     public ResourceResponse getProducts(int page, int size) {
 
         Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
@@ -195,6 +191,7 @@ public class ProductService {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setVendorId(product.getVendor().getId());
+        productDTO.setVendorName(product.getVendor().getBusinessName());
         productDTO.setCategoryId(product.getCategory().getId());
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
