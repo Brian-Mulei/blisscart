@@ -6,6 +6,7 @@ public class ProductDTO {
 
     private Long id;
     private Long vendorId;
+    private String vendorName;
     private Long categoryId;
     private String name;
     private String description;
@@ -26,6 +27,14 @@ public class ProductDTO {
 //    }
 //
 
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
 
     public Long getVendorId() {
         return vendorId;
