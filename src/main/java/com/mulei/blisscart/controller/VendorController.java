@@ -1,10 +1,13 @@
 package com.mulei.blisscart.controller;
 
 import com.mulei.blisscart.dto.ProductDTO;
+import com.mulei.blisscart.dto.ProductVariationDTO;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vendor")
@@ -17,22 +20,31 @@ public class VendorController {
     }
 
 
-    @PutMapping("/variation/{variationId}/update-quantity")
-    public ResponseEntity<ResourceResponse> updateVariationQuantity(
+    @PutMapping("/variation/{variationId}/update-price")
+    public  ResourceResponse updateVariationPrice(
             @PathVariable Long variationId,
-            @RequestParam Double newQuantity) {
+            @RequestParam Double newPrice) {
 
-         return ResponseEntity.ok(productService.updatePrice(variationId, newQuantity));
+         return productService.updatePrice(variationId, newPrice);
     }
 
 
 
     @PutMapping("/variation/{variationId}/update-quantity")
-    public ResponseEntity<ResourceResponse> updateVariationPrice(
+    public  ResourceResponse updateVariationQuantity(
             @PathVariable Long variationId,
             @RequestParam int newQuantity) {
 
-        return ResponseEntity.ok(productService.updateQuantity(variationId, newQuantity));
+        return  productService.updateQuantity(variationId, newQuantity);
+    }
+
+
+    @PutMapping("/product/{productId}/add-variant")
+    public  ResourceResponse addVariation(
+            @PathVariable Long productId,
+            @RequestBody List<ProductVariationDTO> request) {
+
+        return  productService.addProductVariation(request, productId);
     }
 
 

@@ -1,18 +1,16 @@
 package com.mulei.blisscart.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mulei.blisscart.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.mulei.blisscart.dto.ProductCreationDTO;
-import com.mulei.blisscart.dto.ProductDTO;
-import com.mulei.blisscart.dto.ProductImageDTO;
-import com.mulei.blisscart.dto.ProductVariationDTO;
 import com.mulei.blisscart.model.Product;
 import com.mulei.blisscart.model.ProductImage;
 import com.mulei.blisscart.model.ProductVariation;
@@ -84,7 +82,6 @@ public class ProductService {
         product.setDescription(request.getDescription());
         product.setImages(images);
 
-        productRepository.save(product);
 
         if(!request.getVariations().isEmpty()){
             List<ProductVariation> variations = request.getVariations().stream()
@@ -101,21 +98,59 @@ public class ProductService {
             .collect(Collectors.toList());
             product.setVariations(variations);
 
+            productRepository.save(product);
+
+        }else{
+            productRepository.save(product);
+
         }
 
 
-        productRepository.save(product);
         return new ResourceResponse(null, "Added Successfully", true);
 
     }
 
 
+    public ResourceResponse addProductVariation(List<ProductVariationDTO> request, Long productId) {
+
+         Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
+            return new ResourceResponse(null, "Product not found", false);
+        }
+
+        Product product = optionalProduct.get();
+
+        List<ProductVariation> variations = request.stream()
+                .map(variant -> {
+                    ProductVariation variation = new ProductVariation();
+
+                    variation.setProduct(product);
+                    variation.setPrice(variant.getPrice());
+                    variation.setQuantity(variant.getQuantity());
+                    variation.setVariationDescription(variant.getVariationDescription());
+
+                    return variation;
+                })
+                .collect(Collectors.toList());
+
+
+        if (product.getVariations() != null) {
+            product.getVariations().addAll(variations);
+        } else {
+            product.setVariations(variations);
+        }
+        productRepository.save(product);
+
+
+        return new ResourceResponse(null, "Variations added Successfully", true);
+
+    }
+
     public ResourceResponse getProducts(int page, int size) {
 
         Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
 
-        // return new ResourceResponse(products, "Added Successfully", true);
-        List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
+         List<ProductDTO> productDTOs = products.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         return new ResourceResponse(productDTOs, "Fetched successfully", true);
     }
