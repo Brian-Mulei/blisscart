@@ -1,20 +1,16 @@
 package com.mulei.blisscart.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "product_variations")
 public class ProductVariation {
 
 
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
@@ -73,7 +69,5 @@ public class ProductVariation {
     }
 
 
-
-    
 }
 

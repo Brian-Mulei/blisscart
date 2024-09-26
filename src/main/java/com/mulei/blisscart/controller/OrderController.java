@@ -1,7 +1,9 @@
 package com.mulei.blisscart.controller;
 
+import com.mulei.blisscart.dto.OrderCreationDTO;
 import com.mulei.blisscart.dto.OrderDTO;
 import com.mulei.blisscart.model.Order;
+import com.mulei.blisscart.reponse.OrderResponse;
 import com.mulei.blisscart.reponse.ResourceResponse;
 import com.mulei.blisscart.service.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,9 @@ public class OrderController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Order> addOrder(@RequestBody OrderDTO request) {
+    public OrderResponse addOrder(@RequestBody OrderCreationDTO request) {
 
-        return  ResponseEntity.ok(orderService.createOrder(request)) ;
+        return   orderService.createOrder(request);
     }
 
 

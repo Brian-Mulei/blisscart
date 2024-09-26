@@ -17,4 +17,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findByCustomer(User customer);
 
 
+    boolean existsByReferenceNumber(String referenceNumber);
+
+
 }
