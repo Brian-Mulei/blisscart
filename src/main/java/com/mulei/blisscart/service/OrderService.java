@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -113,7 +114,40 @@ public class OrderService {
         if(userRepository.findById(customerId).isPresent()) {
             List<Order> customerOrders = orderRepository.findByCustomer(userRepository.findById(customerId).get());
 
-            return new ResourceResponse(customerOrders, "Retrieved", true);
+            List<OrderDTO> orders = customerOrders.stream()
+                    .map(customerOrder -> {
+
+                        OrderDTO orderDTO = new OrderDTO();
+
+                        orderDTO.setId(customerOrder.getId());
+                        orderDTO.setCustomerId(customerId);
+                        orderDTO.setReferenceNumber(customerOrder.getReferenceNumber());
+
+                        orderDTO.setPurchaseTime(customerOrder.getorderTime());
+
+                        orderDTO.setTotal(customerOrder.getTotal());
+                        orderDTO.setStatus(customerOrder.getStatus());
+
+                        orderDTO.setItems(customerOrder.getItems().stream().map(
+                                orderItem -> {
+                                    OrderItemDTO itemDTO=   new  OrderItemDTO();
+
+                                    itemDTO.setId(orderItem.getId());
+                                    itemDTO.setproductVariationId(orderItem.getVariation().getId());
+                                    itemDTO.setQuantity(orderItem.getQuantity());
+                                    itemDTO.setPerPrice(orderItem.getPerPrice());
+                                    itemDTO.setSubTotal(orderItem.getSubTotal());
+                                    return itemDTO;
+                                }
+                        ).collect(Collectors.toList()));
+
+
+                        return orderDTO;
+                    }
+
+            ).collect(Collectors.toList());
+
+            return new ResourceResponse(orders, "Retrieved", true);
         }else{
             return new ResourceResponse(null, "User not found", false);
 
